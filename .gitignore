@@ -1,0 +1,9 @@
+*.class
+
+com.merccoder.wordbeaver/gen/
+com.merccoder.wordbeaver/bin/
+
+# Package Files #
+*.jar
+*.war
+*.ear
