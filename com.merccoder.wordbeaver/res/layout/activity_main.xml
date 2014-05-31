@@ -2,7 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0099cc"
+    android:background="#d4ac82"
     tools:context="com.merccoder.wordbeaver.MainActivity" >
 
+    <ImageView 
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:scaleType="fitCenter"
+    	android:src="@drawable/introbeaversign"/>
+    
 </RelativeLayout>
