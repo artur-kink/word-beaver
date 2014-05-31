@@ -1,5 +1,6 @@
 *.class
 
+com.merccoder.wordbeaver/.metadata
 com.merccoder.wordbeaver/gen/
 com.merccoder.wordbeaver/bin/
 
