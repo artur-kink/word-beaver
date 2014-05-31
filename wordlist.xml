@@ -1,0 +1,116 @@
+<list type="vocabulary" lang="french" title="fruits">
+	<word from="apple" to="pomme" article="la"/>
+	<word from="blueberry" to="myrtille" article="la" />
+	<word from="pineapple" to="ananas" article="l'" />
+	<word from="cherry" to="cerise" article="la" />
+	<word from="grapefruit" to="plamplemousse" article="le" />
+	<word from="cranberry" to="canneberg" article="la" />
+	<word from="avocado" to="avocat" article="le" />
+	<word from="blackberry" to="mûre" article="la" />
+	<word from="fig" to="figue" article="la" />
+	<word from="cantaloupe" to="cantaloup" article="le" />
+	<word from="pear" to="poire" article="la" />
+	<word from="raspberry" to="framboise" article="la" />
+	<word from="strawberry" to="fraise" article="la" />
+	<word from="peach" to="pêche" article="la" />
+	<word from="lime" to="citron vert" article="le" />
+	<word from="lemon" to="citron" article="le" />
+	<word from="lychee" to="litchi" article="le" />
+	<word from="guava" to="goyave" article="la" />
+	<word from="grape" to="raisin" article="le" />
+	<word from="blackcurrant" to="cassis" article="le" />
+
+</list>
+
+<list type="vocabulary" lang="french" title="vegetables">
+	<word from="corn" to="maïs" article="le" />
+	<word from="bell pepper" to="poivron" article="le" />
+	<word from="tomato" to="tomate" article="la" />
+	<word from="potato" to="pomme de terre" article="la" />
+	<word from="lettuce" to="laitue" article="la" />
+	<word from="spinach" to="épinards" article="les" />
+	<word from="cabbage" to="chou" article="le" />
+	<word from="beans" to="haricot" article="le" />
+	<word from="wheat" to="blé" article="le" />
+	<word from="pea" to="petit pois" article="le" />
+
+	<word from="kale" to="chou frisé" article="le" />
+	<word from="mushroom" to="champignon" article="le" />
+	<word from="turnip" to="navet" article="le" />
+	<word from="broccoli" to="brocoli" article="le" />
+	<word from="carrot" to="carotte" article="la" />
+</list>
+
+<list type="vocabulary" lang="french" title="colors">
+	<word from="blue" to="bleu"/>
+	<word from="red" to="rouge" />
+	<word from="green" to="vert" />
+	<word from="yellow" to="jaune" />
+	<word from="pink" to="rose" />
+	<word from="brown" to="marron" />
+	<word from="black" to="noir" />
+	<word from="white" to="blanc" />
+	<word from="orange" to="orange" />
+	<word from="purple" to="violet" />
+
+	<word from="ochre" to="ocre" />
+	<word from="turquoise" to="turquoise" />
+	<word from="beige" to="beige" />
+	<word from="burgundy" to="bordeaux" />
+	<word from="grey" to="gris" />
+</list>
+
+<list type="conjugation" lang="french" title="to be (present) - être">
+	<word from="I am" to="suis" pronoun="je" />
+	<word from="you are (sg)" to="es" pronoun="tu" />
+	<word from="one is" to="est" pronoun="on" />
+	<word from="we are" to="sommes" pronoun="nous" />
+	<word from="you are (pl)" to="êtes" pronoun="vous" />
+	<word from="they are" to="sont" pronoun="ils" />
+
+</list>
+
+<list type="conjugation"  lang="french" title="to have (present) - avoir">
+	<word from="I have" to="ai" pronoun="j'" />
+	<word from="you have (sg)" to="as" pronoun="tu" />
+	<word from="one has" to="a" pronoun="on" />
+	<word from="we have" to="avons" pronoun="nous" />
+	<word from="you have (pl)" to="avez" pronoun="vous" />
+	<word from="they have" to="ont" pronoun="ils" />
+
+</list>
+
+<list type="conjugation" lang="french" title="to eat (present) - manger">
+	<word from="I eat" to="mange" pronoun="j'" />
+	<word from="you eat (sg)" to="manges" pronoun="tu" />
+	<word from="one eats" to="mange" pronoun="on" />
+	<word from="we eat" to="mangeons" pronoun="nous" />
+	<word from="you eat (pl)" to="mangez" pronoun="vous" />
+	<word from="they eat" to="mangent" pronoun="ils" />
+
+</list>
+
+<list type="conjugation" lang="french" title="to eat (present) - manger">
+	<word from="I eat" to="mange" pronoun="j'" />
+	<word from="you eat (sg)" to="manges" pronoun="tu" />
+	<word from="one eats" to="mange" pronoun="on" />
+	<word from="we eat" to="mangeons" pronoun="nous" />
+	<word from="you eat (pl)" to="mangez" pronoun="vous" />
+	<word from="they eat" to="mangent" pronoun="ils" />
+
+</list>
+
+<list type="verbs" lang="french" title="regular -RE">
+	<word from="to go down" to="descendre" />
+	<word from="to lose" to="perdre" />
+	<word from="to sell" to="vendre" />
+	<word from="to wait" to="attendre" />
+	<word from="to answer" to="répondre" />
+
+	<word from="to hear" to="entendre" />
+	<word from="to hang" to="pendre" />
+	<word from="to split" to="frendre" />
+	<word from="to give back" to="rendre" />
+	<word from="to melt" to="frondre" />
+
+</list>
