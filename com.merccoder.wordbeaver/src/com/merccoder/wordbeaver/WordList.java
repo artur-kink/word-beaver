@@ -10,4 +10,8 @@ public class WordList {
 	public String language;
 	
 	public Vector<Word> words;
+	
+	public WordList(){
+		words = new Vector<Word>();
+	}
 }
