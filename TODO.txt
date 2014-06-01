@@ -1,0 +1,33 @@
+TODO:
+- align grass to bottom of screen
+- space menu buttons
+- change font of english word text (in-game)
+- add time countdown (60 sec)
+- add points:
+	- 2 point/letter
+	- +remaining time
+- add games menu after play game:
+	- fruits
+	- veggies
+	- to be
+	- to have
+	- to eat
+	- RE Verbs
+- align leaf to games menu and game bar
+	- dummy high score on games menu
+- donate paypal button
+- add achievements:
+	- unlocked dictionary
+		(ability: translate a eng word in game)
+	- unlocked lamp
+		(ability: brighten a word in a game)
+	- unlocked vase
+		(ability: adds daisies to non word letters)
+	- unlocked clock
+		(ability: adds extra 10 seconds)
+- add music:
+	- button press
+	- in-game
+	- achievements
+
+
