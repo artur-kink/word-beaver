@@ -394,18 +394,17 @@ public class MainActivity extends Activity implements OnClickListener{
 	    	usedWordsTextViews[i].setText("");
 	    }
     	
+    	Vector<Word> listWords = new Vector<Word>();
+    	listWords.addAll(list.words);
+    	
     	//Populate words into game tiles.
-	    for(int i = 0; i < 8; i++){
-	    	Word word = list.words.get((int)(Math.random()*list.words.size()));
+	    for(int i = 0; i < 8 && listWords.size() > 0; i++){
+	    	
+	    	Word word = listWords.get((int)(Math.random()*listWords.size()));
 	    	
 	    	//Make sure word fits.
 	    	if(word.to.length() > 8){
-	    		i--;
-	    		continue;
-	    	}
-	    	
-	    	//Check if word already in use.
-	    	if(wordsUsed.contains(word)){
+	    		listWords.remove(word);
 	    		i--;
 	    		continue;
 	    	}
@@ -459,6 +458,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	    			}
 	    		}
 	    	}
+	    	listWords.remove(word);
 	    }
 	    
 	    //Fill random letters for unused buttons
