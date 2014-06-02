@@ -111,12 +111,27 @@ public class MainActivity extends BaseGameActivity implements OnClickListener{
 	
 	public RelativeLayout gameScreen;
 	public Button endGameButton;
+	public TextView timerText;
 	public TextView gameTitleText;
 	public TextView scoreText;
 	public RelativeLayout tilesContainer;
 	public TextView usedWordsTextViews[];
 	public Vector<LetterButton> letterButtons;
 	public Vector<LetterButton> selectedButtons;
+	public long gameStartTime;
+	Handler gameHandler = new Handler();
+    Runnable gameTimer = new Runnable() {
+        @Override
+        public void run() {
+        	gameHandler.postDelayed(this, 100);
+            
+        	timerText.setText("" + (60000 - (System.currentTimeMillis() - gameStartTime))/1000);
+        	
+        	if(System.currentTimeMillis() - gameStartTime > 60000){
+        		stopGame();
+        	}
+        }
+    };
 	
 	
 	public static Typeface loggerFont;
@@ -194,6 +209,9 @@ public class MainActivity extends BaseGameActivity implements OnClickListener{
 	    
 	    //Initialize game screen.
 	    gameScreen = (RelativeLayout)inflater.inflate(R.layout.game_layout, null);
+	    
+	    timerText = (TextView)gameScreen.findViewById(R.id.timer_text);
+	    
 	    scoreText = (TextView)gameScreen.findViewById(R.id.score_text);
 	    scoreText.setTypeface(deliusBoldFont);
 	    
@@ -376,6 +394,7 @@ public class MainActivity extends BaseGameActivity implements OnClickListener{
     	transitionHandler.postDelayed(transitionTimer, 0);
     	setScreen(transitionScreen);
     }
+    
     /**
      * Create a new game and populate game view.
      */
@@ -480,6 +499,13 @@ public class MainActivity extends BaseGameActivity implements OnClickListener{
 	    clearButtons();
 	    
 	    scoreText.setText("0");
+	    gameStartTime = System.currentTimeMillis();
+	    gameHandler.postDelayed(gameTimer, 0);
+    }
+    
+    public void stopGame(){
+    	gameHandler.removeCallbacks(gameTimer);
+    	setScreen(startScreen);
     }
     
     /**
@@ -559,7 +585,7 @@ public class MainActivity extends BaseGameActivity implements OnClickListener{
 		    		}
 		    		if(allFound){
 		    			AudioPlayer.playSound(AudioPlayer.tada);
-		    			setScreen(startScreen);
+		    			stopGame();
 		    		}
 	    		}
 	    		return true;
@@ -650,6 +676,7 @@ public class MainActivity extends BaseGameActivity implements OnClickListener{
 			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.merccoder.com/wbdonation.html"));
 			startActivity(browserIntent);
 		}else if(v == endGameButton){
+			stopGame();
 			setScreen(gameOptionsScreen);
 		}else if(v == achievementButton){
 			openAchievements();
