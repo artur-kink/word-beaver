@@ -4,6 +4,9 @@ import java.util.Vector;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import com.google.android.gms.games.Games;
+import com.google.example.games.basegameutils.BaseGameActivity;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -31,7 +34,9 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements OnClickListener{
+public class MainActivity extends BaseGameActivity implements OnClickListener{
+	
+	boolean registerred;
 	
 	//List of word lists.
 	public Vector<WordList> wordLists;
@@ -127,8 +132,12 @@ public class MainActivity extends Activity implements OnClickListener{
     @SuppressLint("NewApi")
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        super.onCreate(savedInstanceState);
+        
+        //Do not log in on startup.
+    	getGameHelper().setConnectOnStart(false);
         
         loggerFont = Typeface.createFromAsset(getAssets(), "font/Logger.ttf");
         deliusFont = Typeface.createFromAsset(getAssets(), "font/delius-regular.ttf");
@@ -642,16 +651,57 @@ public class MainActivity extends Activity implements OnClickListener{
 			startActivity(browserIntent);
 		}else if(v == endGameButton){
 			setScreen(gameOptionsScreen);
+		}else if(v == achievementButton){
+			openAchievements();
 		}
 	}
 	
 	@Override
-	public void onBackPressed (){
+	public void onBackPressed(){
 		if(currentScreen == startScreen){
 			super.onBackPressed();
 		}else{
 			setScreen(startScreen);
 		}
+	}
+
+
+	public boolean loggedIn(){
+		if(!isSignedIn()){
+			beginUserInitiatedSignIn();
+		}
+		return isSignedIn();
+	}
+	
+	public void giveAchievement(int achievementId){
+		if(registerred && isSignedIn())
+			Games.Achievements.unlock(getApiClient(), getResources().getString(achievementId));
+		
+	}
+	
+	public void submitScore(int scoreId, int score){
+		if(registerred && isSignedIn())
+			Games.Leaderboards.submitScore(getApiClient(), getResources().getString(scoreId), score);
+	}
+	
+	public void openAchievements(){
+		if(loggedIn()){
+			startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()), 0);
+		}
+	}
+	
+	public void openHighscores(){
+		if(loggedIn()){
+			startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()), 1);
+		}
+	}
+	
+	@Override
+	public void onSignInFailed() {
+	}
+
+	@Override
+	public void onSignInSucceeded() {
 	}
 
 }
