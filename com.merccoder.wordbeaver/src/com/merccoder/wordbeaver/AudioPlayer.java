@@ -16,6 +16,9 @@ public class AudioPlayer {
 	private static SoundPool soundPool;
 
 	public static boolean soundOn;
+	
+	public static int tada;
+	public static int chomp;
 
 	/**
 	 * Initializes audio and sound player.
@@ -26,7 +29,8 @@ public class AudioPlayer {
 	    soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
 	    
 	    //Load sounds
-	    //temp = soundPool.load(context, R.raw.temp, 1);
+	    tada = soundPool.load(context, R.raw.tada, 1);
+	    chomp = soundPool.load(context, R.raw.chomp, 1);
 	}
 
 	public static void playSound(int id) {

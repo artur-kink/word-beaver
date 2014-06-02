@@ -3,18 +3,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <ImageView 
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+    <RelativeLayout 
+        android:id="@+id/game_banner"
         android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:scaleType="fitCenter"
-    	android:src="@drawable/menubar"/>
+    	android:layout_centerHorizontal="true"
+    	android:background="@drawable/menubar">
+        
+        <Button android:id="@+id/end_game"
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:layout_alignParentLeft="true"
+    		android:layout_centerVertical="true"
+    		android:background="@drawable/fin"
+    		android:layout_marginLeft="25dp"/>
+        
+        <TextView
+            android:id="@+id/score_text"
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:layout_alignParentRight="true"
+    		android:layout_centerVertical="true"
+    		android:layout_marginRight="10dp"
+    		android:paddingLeft="15dp"
+    		android:gravity="center_vertical"
+    		android:textSize="30sp"
+            android:background="@drawable/orangeleaf">
+        </TextView>
+            
+		<TextView
+            android:id="@+id/game_title"
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:layout_centerHorizontal="true"
+    		android:layout_centerVertical="true"
+    		android:gravity="center"
+    		android:textSize="75sp"
+    		android:textColor="#452e1e">
+        </TextView>
+        
+    </RelativeLayout>
+
     
     <LinearLayout android:id="@+id/words_list"
         android:baselineAligned="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/game_banner"
         android:weightSum="100"
         android:orientation="horizontal"
         android:layout_centerHorizontal="true">
@@ -26,21 +61,32 @@
         	android:orientation="vertical">
             
             <TextView android:id="@+id/word1"
-                android:textAlignment="center"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"/>
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textColor="#506C1A"/>
             
             <TextView android:id="@+id/word2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textColor="#506C1A"/>
             
             <TextView android:id="@+id/word3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textColor="#506C1A"/>
             
             <TextView android:id="@+id/word4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textColor="#506C1A"/>
             
         </LinearLayout>
         
@@ -51,20 +97,32 @@
         	android:orientation="vertical">
             
             <TextView android:id="@+id/word5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textColor="#506C1A"/>
             
             <TextView android:id="@+id/word6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textColor="#506C1A"/>
             
             <TextView android:id="@+id/word7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textColor="#506C1A"/>
             
             <TextView android:id="@+id/word8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textColor="#506C1A"/>
             
         </LinearLayout>
         
@@ -74,7 +132,7 @@
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:layout_centerHorizontal="true"
-    	android:layout_below="@id/words_list">
+    	android:layout_alignParentBottom="true">
 		    
     </RelativeLayout>
     

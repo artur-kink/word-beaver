@@ -6,18 +6,25 @@ import org.xmlpull.v1.XmlPullParser;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -28,7 +35,11 @@ public class MainActivity extends Activity implements OnClickListener{
 	
 	//List of word lists.
 	public Vector<WordList> wordLists;
-
+	//List of used words, to avoid doubles.
+	public Vector<Word> wordsUsed;
+	
+	public int gameScore;
+	
 	public RelativeLayout mainScreen;
 	public View currentScreen;
 	
@@ -43,21 +54,75 @@ public class MainActivity extends Activity implements OnClickListener{
 	public ScrollView gameOptionsScreen;
 	
 	
+	public RelativeLayout transitionScreen;
+	public ImageView transitionImage;
+	public View transitionTarget;
+	public int transitionCounter;
+	Handler transitionHandler = new Handler();
+    Runnable transitionTimer = new Runnable() {
+        @Override
+        public void run() {
+            transitionHandler.postDelayed(this, 500);
+            
+            if(transitionCounter == 0){
+            	Animation fadeIn = new AlphaAnimation(0, 1);
+            	fadeIn.setInterpolator(new AccelerateInterpolator());
+            	fadeIn.setStartOffset(0);
+            	fadeIn.setDuration(500);
+            	transitionImage.startAnimation(fadeIn);
+            	
+            	transitionImage.setImageResource(R.drawable.beaver2);
+            }else if(transitionCounter == 1){
+            	transitionImage.setImageResource(R.drawable.beaver3);
+            }else if(transitionCounter == 2){
+            	transitionImage.setImageResource(R.drawable.beaver4);
+            }else if(transitionCounter == 3){
+            	transitionImage.setImageResource(R.drawable.beaver1);
+            	Animation fadeOut = new AlphaAnimation(1, 0);
+            	fadeOut.setInterpolator(new AccelerateInterpolator());
+            	fadeOut.setStartOffset(0);
+            	fadeOut.setDuration(500);
+            	transitionImage.startAnimation(fadeOut);
+            }
+            
+            transitionCounter++;
+            if(transitionCounter == 5){
+            	setScreen(transitionTarget);
+            	
+            	//Fade in transition target
+            	Animation fadeIn = new AlphaAnimation(0, 1);
+            	fadeIn.setInterpolator(new AccelerateInterpolator());
+            	fadeIn.setStartOffset(0);
+            	fadeIn.setDuration(500);
+            	transitionTarget.startAnimation(fadeIn);
+            	
+            	transitionHandler.removeCallbacks(transitionTimer);
+            }else if(transitionCounter > 1){
+            	AudioPlayer.playSound(AudioPlayer.chomp);
+            }
+        }
+    };
+	
+	
 	public RelativeLayout gameScreen;
+	public Button endGameButton;
+	public TextView gameTitleText;
+	public TextView scoreText;
 	public RelativeLayout tilesContainer;
 	public TextView usedWordsTextViews[];
-	public Vector<Button> letterButtons;
-	public Vector<Button> selectedButtons;
+	public Vector<LetterButton> letterButtons;
+	public Vector<LetterButton> selectedButtons;
 	
 	
 	public static Typeface loggerFont;
+	public static Typeface burnsTownDamFont;
 	public static Typeface deliusFont;
 	public static Typeface deliusBoldFont;
 	
 	//Number of rows in letter tile buttons.
-	public final int ROWS = 8;
+	public final int ROWS = 9;
 	//Number of buttons in each letter tile row.
-	public final int COLUMN_WIDTH = 8;
+	public final int COLUMNS = 8;
 	
     @SuppressLint("NewApi")
 	@Override
@@ -68,9 +133,10 @@ public class MainActivity extends Activity implements OnClickListener{
         loggerFont = Typeface.createFromAsset(getAssets(), "font/Logger.ttf");
         deliusFont = Typeface.createFromAsset(getAssets(), "font/delius-regular.ttf");
         deliusBoldFont = Typeface.createFromAsset(getAssets(), "font/deliusuni-bold.ttf");
-        
-        letterButtons = new Vector<Button>();
-        selectedButtons = new Vector<Button>();
+        burnsTownDamFont = Typeface.createFromAsset(getAssets(), "font/burnstowndam.ttf");
+        		
+        letterButtons = new Vector<LetterButton>();
+        selectedButtons = new Vector<LetterButton>();
         
         loadWordLists();
         
@@ -113,8 +179,21 @@ public class MainActivity extends Activity implements OnClickListener{
 	    }
 	    
 	    
+	    //Initialize transition screen
+	    transitionScreen = (RelativeLayout)inflater.inflate(R.layout.transition_screen, null);
+	    transitionImage = (ImageView)transitionScreen.findViewById(R.id.transition_image);
+	    
 	    //Initialize game screen.
 	    gameScreen = (RelativeLayout)inflater.inflate(R.layout.game_layout, null);
+	    scoreText = (TextView)gameScreen.findViewById(R.id.score_text);
+	    scoreText.setTypeface(deliusBoldFont);
+	    
+	    gameTitleText = (TextView)gameScreen.findViewById(R.id.game_title);
+	    gameTitleText.setTypeface(burnsTownDamFont);
+	    
+	    endGameButton = (Button)gameScreen.findViewById(R.id.end_game);
+	    endGameButton.setOnClickListener(this);
+	    
 	    tilesContainer = (RelativeLayout)gameScreen.findViewById(R.id.tiles_container);
 	    usedWordsTextViews = new TextView[8];
 	    usedWordsTextViews[0] = (TextView)gameScreen.findViewById(R.id.word1);
@@ -126,8 +205,12 @@ public class MainActivity extends Activity implements OnClickListener{
 	    usedWordsTextViews[6] = (TextView)gameScreen.findViewById(R.id.word7);
 	    usedWordsTextViews[7] = (TextView)gameScreen.findViewById(R.id.word8);
 	    
-	    for(int i = 0; i < ROWS*COLUMN_WIDTH; i++){
-	    	Button tile = new Button(this);
+	    for(int i = 0; i < 8; i++){
+	    	usedWordsTextViews[i].setTypeface(deliusBoldFont);
+	    }
+	    
+	    for(int i = 0; i < ROWS*COLUMNS; i++){
+	    	LetterButton tile = new LetterButton(this);
 	    	tile.setId(i+1);
 	    	
 
@@ -173,6 +256,8 @@ public class MainActivity extends Activity implements OnClickListener{
 	    }
  		gameScreen.setPadding(0, 0, 0, 25);
  		
+ 		AudioPlayer.context = this;
+ 		AudioPlayer.initSounds();
  		
 	    setScreen(startScreen);
     }
@@ -181,6 +266,9 @@ public class MainActivity extends Activity implements OnClickListener{
      * Loads word lists from xml.
      */
     public void loadWordLists(){
+    	
+    	wordsUsed = new Vector<Word>();
+    	
     	//Parse words lists.
 	    Log.println(Log.INFO, "Init", "Loading word list");
 	    XmlResourceParser xmlResource = getResources().getXml(R.xml.wordlist);
@@ -256,9 +344,15 @@ public class MainActivity extends Activity implements OnClickListener{
     		LayoutParams params = new LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
         	    RelativeLayout.LayoutParams.MATCH_PARENT);
         	mainScreen.addView(screen, params);
+        }else if(screen == transitionScreen){
+    		LayoutParams params = new LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+        	    	RelativeLayout.LayoutParams.MATCH_PARENT);
+        	params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        	params.addRule(RelativeLayout.CENTER_VERTICAL);
+        	mainScreen.addView(screen, params);
         }else if(screen == gameScreen){
-    		LayoutParams params = new LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-    	    	RelativeLayout.LayoutParams.WRAP_CONTENT);
+    		LayoutParams params = new LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+    	    	RelativeLayout.LayoutParams.MATCH_PARENT);
     	    params.addRule(RelativeLayout.CENTER_HORIZONTAL);
     	    params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
     	    mainScreen.addView(screen, params);
@@ -266,18 +360,39 @@ public class MainActivity extends Activity implements OnClickListener{
     	
     }
     
+    
+    public void transition(View screen){
+    	transitionTarget = screen;
+    	transitionCounter = 0;
+    	transitionHandler.postDelayed(transitionTimer, 0);
+    	setScreen(transitionScreen);
+    }
     /**
-     * Populate game view.
+     * Create a new game and populate game view.
      */
     public void createGame(WordList list){
     	
+    	gameTitleText.setText(list.title);
+    	
+    	//Reset game score.
+    	gameScore = 0;
+    	
     	//Clear characters from letter buttons.
     	for(int i = 0; i < letterButtons.size(); i++){
+    		letterButtons.get(i).found = false;
 	    	letterButtons.get(i).setText("");
 	    }
     	
-    	//List of used words, to avoid doubles.
-    	Vector<Word> wordsUsed = new Vector<Word>();
+    	//Clear found state of previous used words.
+    	for(int i = 0; i < wordsUsed.size(); i++){
+    		wordsUsed.get(i).found = false;
+    	}
+    	wordsUsed.clear();
+    	
+    	//Clear used words text
+    	for(int i = 0; i < 8; i++){
+	    	usedWordsTextViews[i].setText("");
+	    }
     	
     	//Populate words into game tiles.
 	    for(int i = 0; i < 8; i++){
@@ -295,17 +410,18 @@ public class MainActivity extends Activity implements OnClickListener{
 	    		continue;
 	    	}
 	    	
+	    	//Attempt to find a random spot to place the word.
 	    	for(int tries = 0; tries < 25; tries++){
 	    		
 	    		//Try to position word vertically
 	    		if(Math.random() > 0.5){
-	    			int r = (int)(Math.random()*(8-word.to.length()));
-	    			int c = (int)(Math.random()*8);
+	    			int r = (int)(Math.random()*(ROWS-word.to.length()));
+	    			int c = (int)(Math.random()*COLUMNS);
 	    			
 	    			boolean fits = true;
 	    			for(int l = 0; l < word.to.length(); l++){
-	    				if(letterButtons.get(r*8 + c + l*8).getText().length() != 0 &&
-	    						letterButtons.get(r*8 + c + l*8).getText().charAt(0) != word.to.charAt(l)){
+	    				if(letterButtons.get(r*COLUMNS + c + l*COLUMNS).getText().length() != 0 &&
+	    						letterButtons.get(r*COLUMNS + c + l*COLUMNS).getText().charAt(0) != word.to.charAt(l)){
 	    					fits = false;
 	    					break;
 	    				}
@@ -313,7 +429,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	    			
 	    			if(fits){
 	    				for(int l = 0; l < word.to.length(); l++){
-		    				letterButtons.get(r*8 + c + l*8).setText("" + word.to.charAt(l));
+		    				letterButtons.get(r*COLUMNS + c + l*COLUMNS).setText("" + word.to.charAt(l));
 		    			}
 	    				wordsUsed.add(word);
 	    				usedWordsTextViews[wordsUsed.size()-1].setText(word.from);
@@ -321,13 +437,13 @@ public class MainActivity extends Activity implements OnClickListener{
 	    			}
 	    		}else{
 	    			//Try to position word horizontally
-	    			int r = (int)(Math.random()*(8));
-	    			int c = (int)(Math.random()*(7-word.to.length()));
+	    			int r = (int)(Math.random()*(ROWS));
+	    			int c = (int)(Math.random()*(COLUMNS-1-word.to.length()));
 	    			
 	    			boolean fits = true;
 	    			for(int l = 0; l < word.to.length(); l++){
-	    				if(letterButtons.get(r*8 + c + l).getText().length() != 0  &&
-	    					letterButtons.get(r*8 + c + l).getText().charAt(0) != word.to.charAt(l)){
+	    				if(letterButtons.get(r*COLUMNS + c + l).getText().length() != 0  &&
+	    					letterButtons.get(r*COLUMNS + c + l).getText().charAt(0) != word.to.charAt(l)){
 	    					fits = false;
 	    					break;
 	    				}
@@ -335,7 +451,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	    			
 	    			if(fits){
 	    				for(int l = 0; l < word.to.length(); l++){
-		    				letterButtons.get(r*8 + c + l).setText("" + word.to.charAt(l));
+		    				letterButtons.get(r*COLUMNS + c + l).setText("" + word.to.charAt(l));
 		    			}
 	    				wordsUsed.add(word);
 	    				usedWordsTextViews[wordsUsed.size()-1].setText(word.from);
@@ -353,6 +469,8 @@ public class MainActivity extends Activity implements OnClickListener{
 	    }
 	    
 	    clearButtons();
+	    
+	    scoreText.setText("0");
     }
     
     /**
@@ -370,11 +488,13 @@ public class MainActivity extends Activity implements OnClickListener{
      * @param button Button to mark.
      * @param selected Selected state.
      */
-    public void setButtonSelected(Button button, boolean selected){
-    	if(selected){
-    		button.setTextColor(Color.argb(255, 115, 87, 87));
-    	}else{
-    		button.setTextColor(Color.argb(255, 69, 46, 30));
+    public void setButtonSelected(LetterButton button, boolean selected){
+    	if(!button.found){
+	    	if(selected){
+	    		button.setTextColor(Color.argb(255, 115, 87, 87));
+	    	}else{
+	    		button.setTextColor(Color.argb(255, 69, 46, 30));
+	    	}
     	}
     }
     
@@ -402,7 +522,36 @@ public class MainActivity extends Activity implements OnClickListener{
 			    		}
 		    		}
 		    		System.out.println("Selected Word: " + word);
+		    		
+		    		for(int i = 0; i < wordsUsed.size(); i++){
+		    			if(word.toLowerCase().compareTo(wordsUsed.get(i).to) == 0){
+		    				gameScore += word.length()*2;
+		    				scoreText.setText("" + gameScore);
+		    				
+		    				usedWordsTextViews[i].setText(wordsUsed.get(i).from + " - " + wordsUsed.get(i).to);
+		    				wordsUsed.get(i).found = true;
+		    				
+		    				for(int l = 0; l < selectedButtons.size(); l++){
+		    					selectedButtons.get(l).found = true;
+		    				}
+		    				break;
+		    			}
+		    		}
+		    		
 		    		clearButtons();
+		    		
+		    		//Check if all words found
+		    		boolean allFound = true;
+		    		for(int i = 0; i < wordsUsed.size(); i++){
+		    			if(!wordsUsed.get(i).found){
+		    				allFound = false;
+		    				break;
+		    			}
+		    		}
+		    		if(allFound){
+		    			AudioPlayer.playSound(AudioPlayer.tada);
+		    			setScreen(startScreen);
+		    		}
 	    		}
 	    		return true;
 	    	}
@@ -443,8 +592,8 @@ public class MainActivity extends Activity implements OnClickListener{
 	    				setButtonSelected(letterButtons.get(i), true);
 	    			}else if(selectedButtons.size() == 1){
 	    				//Check if the second button selected is next to the first one.
-	    				if(selectedButtons.get(0).getId() + COLUMN_WIDTH == letterButtons.get(i).getId() ||
-	    					selectedButtons.get(0).getId() - COLUMN_WIDTH == letterButtons.get(i).getId() ||
+	    				if(selectedButtons.get(0).getId() + COLUMNS == letterButtons.get(i).getId() ||
+	    					selectedButtons.get(0).getId() - COLUMNS == letterButtons.get(i).getId() ||
 	    					selectedButtons.get(0).getId() + 1 == letterButtons.get(i).getId() ||
 	    					selectedButtons.get(0).getId() - 1 == letterButtons.get(i).getId()){
 	    					selectedButtons.add(letterButtons.get(i));
@@ -452,17 +601,17 @@ public class MainActivity extends Activity implements OnClickListener{
 	    				}
 	    			}else if(selectedButtons.size() > 1){
 	    				//Check if selection is along the existing column.
-	    				if(selectedButtons.get(0).getId() % COLUMN_WIDTH == letterButtons.get(i).getId() % COLUMN_WIDTH){
+	    				if(selectedButtons.get(0).getId() % COLUMNS == letterButtons.get(i).getId() % COLUMNS){
 	    					//Check if selection is next to the previous selected button.
-	    					if(selectedButtons.lastElement().getId() + COLUMN_WIDTH == letterButtons.get(i).getId()){
+	    					if(selectedButtons.lastElement().getId() + COLUMNS == letterButtons.get(i).getId()){
 	    						selectedButtons.add(letterButtons.get(i));
 	    						setButtonSelected(letterButtons.get(i), true);
-	        				}else if(selectedButtons.lastElement().getId() - COLUMN_WIDTH == letterButtons.get(i).getId()){
+	        				}else if(selectedButtons.lastElement().getId() - COLUMNS == letterButtons.get(i).getId()){
 	    						selectedButtons.add(letterButtons.get(i));
 	    						setButtonSelected(letterButtons.get(i), true);
 	        				}
 	    				//Check if selection is along the existing row.
-	    				}else if((selectedButtons.get(0).getId()-1) / COLUMN_WIDTH == (letterButtons.get(i).getId()-1) / COLUMN_WIDTH){
+	    				}else if((selectedButtons.get(0).getId()-1) / COLUMNS == (letterButtons.get(i).getId()-1) / COLUMNS){
 	    					//Check if selection is next to the previous selected button.
 	    					if(selectedButtons.lastElement().getId() + 1 == letterButtons.get(i).getId()){
 	    						selectedButtons.add(letterButtons.get(i));
@@ -486,8 +635,13 @@ public class MainActivity extends Activity implements OnClickListener{
 		if(v == newGameButton){
 			setScreen(gameOptionsScreen);
 		}else if(v instanceof CategoryButton){
+			transition(gameScreen);
 			createGame(((CategoryButton)v).list);
-			setScreen(gameScreen);
+		}else if(v == newThemesButton){
+			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.merccoder.com/wbdonation.html"));
+			startActivity(browserIntent);
+		}else if(v == endGameButton){
+			setScreen(gameOptionsScreen);
 		}
 	}
 	

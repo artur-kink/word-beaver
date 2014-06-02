@@ -7,4 +7,10 @@ public class Word {
 	
 	public String article;
 	public String pronoun;
+	
+	public boolean found;
+	
+	public Word(){
+		found = false;
+	}
 }

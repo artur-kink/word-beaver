@@ -13,6 +13,8 @@
         android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
+    	android:scaleType="centerInside"
+    	android:adjustViewBounds="true"
     	android:padding="0px"
     	android:layout_margin="0px"
     	android:src="@drawable/grass"/>

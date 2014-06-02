@@ -16,6 +16,7 @@ public class CategoryButton extends Button {
 		list = l;
 		
 		setText(list.title);
+		setTextSize(30);
     	setTypeface(MainActivity.deliusBoldFont);
     	
     	if(list.type.compareTo("vocabulary") == 0){

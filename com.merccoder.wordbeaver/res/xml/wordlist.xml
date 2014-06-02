@@ -60,6 +60,21 @@
 		<word from="grey" to="gris" />
 	</list>
 	
+	<list type="verbs" lang="french" title="regular -RE verbs">
+		<word from="to go down" to="descendre" />
+		<word from="to lose" to="perdre" />
+		<word from="to sell" to="vendre" />
+		<word from="to wait" to="attendre" />
+		<word from="to answer" to="répondre" />
+	
+		<word from="to hear" to="entendre" />
+		<word from="to hang" to="pendre" />
+		<word from="to split" to="frendre" />
+		<word from="to give back" to="rendre" />
+		<word from="to melt" to="frondre" />
+	
+	</list>
+	
 	<list type="conjugation" lang="french" title="to be (present) - être">
 		<word from="I am" to="suis" pronoun="je" />
 		<word from="you are (sg)" to="es" pronoun="tu" />
@@ -100,18 +115,5 @@
 	
 	</list>
 	
-	<list type="verbs" lang="french" title="regular -RE">
-		<word from="to go down" to="descendre" />
-		<word from="to lose" to="perdre" />
-		<word from="to sell" to="vendre" />
-		<word from="to wait" to="attendre" />
-		<word from="to answer" to="répondre" />
 	
-		<word from="to hear" to="entendre" />
-		<word from="to hang" to="pendre" />
-		<word from="to split" to="frendre" />
-		<word from="to give back" to="rendre" />
-		<word from="to melt" to="frondre" />
-	
-	</list>
 </lists>

@@ -5,10 +5,11 @@ import android.widget.Button;
 
 public class LetterButton extends Button {
 
-	public char letter;
+	public boolean found;
 	
 	public LetterButton(Context context) {
 		super(context);
+		found = false;
 	}
 
 }
