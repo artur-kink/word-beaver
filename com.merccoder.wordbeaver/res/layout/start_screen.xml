@@ -26,14 +26,6 @@
 	    	android:text="Play"
 	    	android:textSize="40sp"
 	    	android:background="@drawable/bluebutton"/>
-	
-	     <Button android:id="@+id/new_themes"
-	        android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	    	android:layout_marginBottom="10dp"
-	    	android:text="Donate"
-	    	android:textSize="40sp"
-	    	android:background="@drawable/bluebutton"/>
 	    
 	    <Button android:id="@+id/achievements"
 	        android:layout_width="wrap_content"

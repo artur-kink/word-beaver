@@ -5,7 +5,7 @@ import java.util.Vector;
 import org.xmlpull.v1.XmlPullParser;
 
 import com.google.android.gms.games.Games;
-import com.google.example.games.basegameutils.BaseGameActivity;
+import com.google.example.games.basegameutils.*;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -53,12 +53,9 @@ public class MainActivity extends BaseGameActivity implements OnClickListener{
 	public Button newGameButton;
 	public Button achievementButton;
 	public Button settingsButton;
-	public Button newThemesButton;
-	
-	
+
 	public ScrollView gameOptionsScreen;
-	
-	
+
 	public RelativeLayout transitionScreen;
 	public ImageView transitionImage;
 	public View transitionTarget;
@@ -183,12 +180,7 @@ public class MainActivity extends BaseGameActivity implements OnClickListener{
 	    settingsButton = (Button)startScreen.findViewById(R.id.settings);
 	    settingsButton.setTypeface(deliusBoldFont);
 	    settingsButton.setOnClickListener(this);
-	    
-	    newThemesButton = (Button)startScreen.findViewById(R.id.new_themes);
-	    newThemesButton.setTypeface(deliusBoldFont);
-	    newThemesButton.setOnClickListener(this);
-	    
-	    
+
 	    //Initialize game options screen.
 	    gameOptionsScreen = (ScrollView)inflater.inflate(R.layout.game_options, null);
 	    LinearLayout categoryList = (LinearLayout)gameOptionsScreen.findViewById(R.id.category_list);
@@ -672,9 +664,6 @@ public class MainActivity extends BaseGameActivity implements OnClickListener{
 		}else if(v instanceof CategoryButton){
 			transition(gameScreen);
 			createGame(((CategoryButton)v).list);
-		}else if(v == newThemesButton){
-			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.merccoder.com/wbdonation.html"));
-			startActivity(browserIntent);
 		}else if(v == endGameButton){
 			stopGame();
 			setScreen(gameOptionsScreen);
